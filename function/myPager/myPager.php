@@ -3,11 +3,11 @@
 class myPager
 {
 	private $show_limit_options = array(
-				"show_limit"			=> false,				// カレント付近以外の表示を制限するか
-				"show_under_current"	=> 3,					// カレント前で表示するページ数
-				"show_over_current"		=> 3,					// カレント後で表示するページ数
-				"edge_add_list"			=> false,				// 最初と最後へのリンクをページリストに追加するか
-				"extra_over_edge"		=> true,				// 端を超えた分をもう一方に追加にするか
+				"show_limit"					=> false,				// カレント付近以外の表示を制限するか
+				"show_num_under_current"		=> 3,					// カレント前で表示するページ数
+				"show_num_over_current"			=> 3,					// カレント後で表示するページ数
+				"edge_add_list"					=> false,				// 最初と最後へのリンクをページリストに追加するか
+				"extra_over_edge"				=> true,				// 端を超えた分をもう一方に追加にするか
 	);
 
 	private $data_count;
@@ -50,7 +50,7 @@ class myPager
 		$this->show_limit_options = array_merge($this->show_limit_options, $show_limit_options);
 
 		// カレント付近の表示件数がMAX以上なら、全件表示で
-		if(($this->show_limit_options["show_under_current"] + $this->show_limit_options["show_over_current"]) >= $this->last) {
+		if(($this->show_limit_options["show_num_under_current"] + $this->show_limit_options["show_num_over_current"]) >= $this->last) {
 			$this->show_limit_options["show_limit"] = false;
 		}
 
@@ -72,8 +72,8 @@ class myPager
 		// 表示制限あり
 		if($this->show_limit_options["show_limit"]) {
 			// カレント付近を表示開始・終了位置に設定
-			$this->show_start = $this->current - $this->show_limit_options["show_under_current"];
-			$this->show_end = $this->current + $this->show_limit_options["show_over_current"];
+			$this->show_start = $this->current - $this->show_limit_options["show_num_under_current"];
+			$this->show_end = $this->current + $this->show_limit_options["show_num_over_current"];
 
 			// 表示開始位置が最初のページ以下
 			if($this->show_start < $this->first) {
