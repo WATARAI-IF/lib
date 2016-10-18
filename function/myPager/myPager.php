@@ -6,7 +6,7 @@ class myPager
 				"show_limit"			=> false,				// カレント付近以外の表示を制限するか
 				"show_under_current"	=> 3,					// カレント前で表示するページ数
 				"show_over_current"		=> 3,					// カレント後で表示するページ数
-				"edge_add_list"		=> false,				// 最初と最後のページリストに追加するか
+				"edge_add_list"			=> false,				// 最初と最後へのリンクをページリストに追加するか
 				"extra_over_edge"		=> true,				// 端を超えた分をもう一方に追加にするか
 	);
 
@@ -130,7 +130,7 @@ class myPager
 		// 表示制限あり
 		if($this->show_limit_options["show_limit"]) {
 			// 両端をリストに追加
-			if(!$this->show_limit_options["edge_add_list"]) {
+			if($this->show_limit_options["edge_add_list"]) {
 				// 最初のページが表示範囲に含まれてなければ追加
 				if($this->first < $this->show_start) {
 					$page_list[$this->first] = array("page_num" => $this->first);
