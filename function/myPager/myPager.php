@@ -17,7 +17,7 @@ class myPager
 	private $show_start;
 	private $show_end;
 
-	function __construct( $data_count, $data_count_page, $current=null, $show_limit_options=array() )
+	function __construct( $data_count, $data_count_page, $current, $show_limit_options=array() )
 	{
 		// データ数
 		$this->data_count = $data_count;
@@ -28,9 +28,7 @@ class myPager
 		}
 
 		// 今のページ
-		if(!is_null($current)) {
-			$this->current = $current;
-		}
+		$this->current = $current;
 
 		// 表示制限時のオプションを設定
 		$this->setShowLimitOptions($show_limit_options);
