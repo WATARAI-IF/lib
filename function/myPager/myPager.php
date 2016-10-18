@@ -19,7 +19,7 @@ class myPager
 
 	function __construct( $data_count, $data_count_page, $current, $show_limit=false, $show_limit_options=array() )
 	{
-		// データ数
+		// 総データ数
 		$this->data_count = $data_count;
 
 		// 最後のページ
