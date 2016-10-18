@@ -6,20 +6,31 @@ class myPager
 				"show_limit"			=> false,				// カレント付近以外の表示を制限するか
 				"show_under_current"	=> 3,					// カレント前で表示するページ数
 				"show_over_current"		=> 3,					// カレント後で表示するページ数
-				"edge_use_block"		=> false,				// 最初と最後のページリンクはブロックにするか
+				"edge_add_list"		=> false,				// 最初と最後のページリストに追加するか
 				"extra_over_edge"		=> true,				// 端を超えた分をもう一方に追加にするか
 	);
 
-	private $first;
-	private $last;
+	private $data_count;
+	private $first = 1;
+	private $last = 1;
 	private $current;
 	private $show_start;
 	private $show_end;
 
-	function __construct( $data_count, $data_count_page, $current, $show_limit_options=array() )
+	function __construct( $data_count, $data_count_page, $current=null, $show_limit_options=array() )
 	{
-		// 基本となるページ数を設定
-		$this->setBasicPageNum($data_count, $data_count_page, $current);
+		// データ数
+		$this->data_count = $data_count;
+
+		// 最後のページ
+		if(!$this->isNoData()) {
+			$this->last = (int)ceil($data_count / $data_count_page);
+		}
+
+		// 今のページ
+		if(!is_null($current)) {
+			$this->current = $current;
+		}
 
 		// 表示制限時のオプションを設定
 		$this->setShowLimitOptions($show_limit_options);
@@ -29,13 +40,9 @@ class myPager
 	}
 
 
-	private function setBasicPageNum($data_count, $data_count_page, $current)
+	public function isNoData()
 	{
-		$this->first = 1;																		// 最初のページ
-		$this->last = (!is_numeric($data_count) || ($data_count <= 0)) ? 0 : (int)ceil($data_count / $data_count_page);			// 最後のページ
-		$this->current = $current;																// 今のページ
-
-		return true;
+		return ($this->data_count <= 0);
 	}
 
 
@@ -60,7 +67,7 @@ class myPager
 		$this->show_end = $this->last;
 
 		// データ数0件？
-		if($this->noData()) {
+		if($this->isNoData()) {
 			return true;
 		}
 
@@ -112,8 +119,8 @@ class myPager
 	{
 		$page_list = array();
 
-		// データ数0件？
-		if($this->noData()) {
+		// データないなら空を返すよ
+		if($this->isNoData()) {
 			return $page_list;
 		}
 
@@ -125,7 +132,7 @@ class myPager
 		// 表示制限あり
 		if($this->show_limit_options["show_limit"]) {
 			// 両端をリストに追加
-			if(!$this->show_limit_options["edge_use_block"]) {
+			if(!$this->show_limit_options["edge_add_list"]) {
 				// 最初のページが表示範囲に含まれてなければ追加
 				if($this->first < $this->show_start) {
 					$page_list[$this->first] = array("page_num" => $this->first);
@@ -173,8 +180,8 @@ class myPager
 	{
 		$items = array();
 
-		// データ数0件？
-		if($this->noData()) {
+		// データないなら空を返すよ
+		if($this->isNoData()) {
 			return $items;
 		}
 
@@ -191,13 +198,13 @@ class myPager
 		}
 
 		// 最初のページが表示範囲に含まれてなければ最初に戻れる
-		if(($this->show_limit_options["show_limit"] && $this->show_limit_options["edge_use_block"] && ($this->first < $this->show_start))) {
+		if(($this->show_limit_options["show_limit"] && !$this->show_limit_options["edge_add_list"] && ($this->first < $this->show_start))) {
 			$items["TO_FIRST_BLOCK"] = true;
 			$items["first_page"] = $this->first;
 		}
 
 		// 最後のページが表示範囲に含まれてなければ最後に飛べる
-		if(($this->show_limit_options["show_limit"] && $this->show_limit_options["edge_use_block"] && ($this->last > $this->show_end))) {
+		if(($this->show_limit_options["show_limit"] && !$this->show_limit_options["edge_add_list"] && ($this->last > $this->show_end))) {
 			$items["TO_LAST_BLOCK"] = true;
 			$items["last_page"] = $this->last;
 		}
@@ -209,11 +216,5 @@ class myPager
 	public function getTotalPageNum()
 	{
 		return $this->last;
-	}
-
-
-	public function noData()
-	{
-		return ($this->getTotalPageNum() == 0);
 	}
 }
